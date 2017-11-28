@@ -95,7 +95,38 @@ app.post('/candidates', function(req,res){
 
 //..................... end of POST requests .........................
 
+//..................... DELETE requests .........................
 
+// DELETE request for managers by id
+app.delete('/managers/:id', function(req, res){
+    var managerId = parseInt(req.params.id, 10);
+    var matchedManager = _.findWhere(managers, {id: managerId});
+
+    if(!matchedManager){
+        res.status(404).json({"error": "no manager found with that id"});
+    }else{
+        managers = _.without(managers, matchedManager);
+        res.json(matchedManager);
+    }
+
+
+});
+
+// DELETE request for candidates by id
+app.delete('/candidates/:id', function(req,res){
+    var candidateId = parseInt(req.params.id);
+    var matchedCandidate = _.findWhere(candidates, {id: candidateId});
+
+    if(!matchedCandidate){
+        res.status(404).json({"error": "no candidate found with that id"});
+    }else{
+        candidates = _.without(candidates, matchedCandidate);
+        res.json(matchedCandidate);
+    }
+});
+
+
+//..................... end of DELETE requests .........................
 
 app.listen(PORT, function(){
     console.log('Express server started');
