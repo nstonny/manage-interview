@@ -92,7 +92,6 @@ app.post('/candidates', function(req,res){
     res.json(body);
 
 });
-
 //..................... end of POST requests .........................
 
 //..................... DELETE requests .........................
@@ -124,9 +123,56 @@ app.delete('/candidates/:id', function(req,res){
         res.json(matchedCandidate);
     }
 });
-
-
 //..................... end of DELETE requests .........................
+
+
+//..................... PUT requests .........................
+// PUT requests for managers
+app.put('/managers/:id', function(req,res){
+    var managerId = parseInt(req.params.id, 10);
+    var matchedManager = _.findWhere(managers, {id: managerId});
+    var body = _.pick(req.body, 'name', 'availability');
+    var validAttributes = {};
+    
+    if(!matchedManager){
+        return res.status(404).send();
+    }
+    if(body.hasOwnProperty('name') && _.isString(body.name)){
+        validAttributes.name = body.name;
+    }else if (body.hasOwnProperty('name')){
+        return res.status(400).send();
+    }
+
+    // do validation for availability
+
+    // update with valid attributes
+    _.extend(matchedManager, validAttributes);
+    res.json(matchedManager);
+});
+
+// PUT requests for candidates
+app.put('/candidates/:id', function(req,res){
+    var candidateId = parseInt(req.params.id, 10);
+    var matchedCandidate = _.findWhere(candidates, {id: candidateId});
+    var body = _.pick(req.body, 'name', 'availability');
+    var validAttributes = {};
+
+    if(!matchedCandidate){
+        return res.status(404).send();
+    }
+    if(body.hasOwnProperty('name') && _.isString(body.name)){
+        validAttributes.name = body.name;
+    }else if(body.hasOwnProperty('name'))
+    {
+        return res.status(400).send();
+    }
+    _.extend(matchedCandidate, validAttributes);
+    res.json(matchedCandidate);
+
+});
+
+
+//..................... end of PUT requests .........................
 
 app.listen(PORT, function(){
     console.log('Express server started');
