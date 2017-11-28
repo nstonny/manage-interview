@@ -1,5 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var _ =  require('underscore');
+
 var app = express();
 var PORT = process.env.PORT || 3000;
 var managers = [];
@@ -21,16 +23,11 @@ app.get('/managers', function(req, res){
 app.get('/candidates', function(req, res){
     res.json(candidates);
 });
+
 //GET manager by id
 app.get('/managers/:id', function(req, res){
     var managerId = parseInt(req.params.id, 10);
-    var matchedManager;
-
-    managers.forEach(function(manager){
-        if(managerId === manager.id){
-            matchedManager = manager;
-        }
-    });
+    var matchedManager = _.findWhere(managers,{id: managerId});     
     if(matchedManager){
         res.json(matchedManager);
     }else{
@@ -41,13 +38,7 @@ app.get('/managers/:id', function(req, res){
 //GET candidate by id
 app.get('/candidates/:id', function(req,res){
     var candidateId = parseInt(req.params.id);
-    var matchedCandidate;
-
-    candidates.forEach(function(candidate){
-        if(candidateId === candidate.id){
-            matchedCandidate = candidate;
-        }
-    });
+    var matchedCandidate = _.findWhere(candidates, {id: candidateId});
     if(matchedCandidate){
         res.json(matchedCandidate);
     }else{
@@ -78,6 +69,7 @@ app.post('/candidates', function(req,res){
 
 });
 
+//..................... end of POST requests .........................
 
 app.listen(PORT, function(){
     console.log('Express server started');
