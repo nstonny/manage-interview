@@ -1,41 +1,15 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var PORT = process.env.PORT || 3000;
-// --------------------------------------------------------------------
-var managers = [{
-    id: 1,
-    name: 'Angela Walker',
-    availability:{
-        date: ['Monday', 'Wednesday'],
-        time: ['10.00-12.00', '13.00-15.30']
-    }
-},
-{
-    id: 2,
-    name: 'Lia Shelton',
-    availability:{
-        day: ['Tuesday', 'Wednesday', 'Friday'],
-        time: ['10.00-12.00', '13.00-15.30', '14.00-16.00']
-    }
-}];
-var candidates = [{
-    id: 1,
-    name: 'Anna Bass',
-    availability:{
-        date: ['Monday', 'Friday'],
-        time: ['10.00-12.00', '11.00-12.00']
-    }
-},
-{
-    id: 2,
-    name: 'Darrell Gill',
-    availability:{
-        day: ['Wednesday', 'Thursday'],
-        time: ['13.30-14.30', '13.00-15.30']
-    }
-}];
-// .......................................................................
+var managers = [];
+var candidates = [];
+var managerNextId = 1;
+var candidateNextId = 1;
 
+app.use(bodyParser.json());
+
+//..................... GET requests .........................
 app.get('/', function(req, res){
     res.send('Welcome to manage interview app');
 });
@@ -79,6 +53,29 @@ app.get('/candidates/:id', function(req,res){
     }else{
         res.status(404).send();
     }
+});
+//..................... end of GET requests .........................
+
+//..................... POST requests .........................
+
+// POST new managers
+app.post('/managers', function(req,res){
+    var body = req.body;
+    // add id field
+    body.id = managerNextId++;    
+    // push body into array
+    managers.push(body);    
+    res.json(body);
+});
+//POST new candidates
+app.post('/candidates', function(req,res){
+    var body = req.body;
+    // add id field
+    body.id = candidateNextId++;
+    // push body into array
+    candidates.push(body);
+    res.json(body);
+
 });
 
 
