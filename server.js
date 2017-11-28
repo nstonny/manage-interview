@@ -51,13 +51,25 @@ app.get('/candidates/:id', function(req,res){
 
 // POST new managers
 app.post('/managers', function(req,res){
-    var body = req.body;
+
+    var body = _.pick(req.body, 'name', 'availability');
+
+    // trim name, check for string, non-zero length, 
+    // check availability.day for array, empty
+    // check availability.time for array, empty
+
+    // if(_.isString(body.name) || _.isArray(body.availability.day) || _.isArray(body.availability.time || 
+    // body.availability.day.length == 0 || body.availability.time.length == 0)){
+    if(!_.isString(body.name)){    
+        return res.status(400).send();
+    }    
     // add id field
     body.id = managerNextId++;    
     // push body into array
     managers.push(body);    
     res.json(body);
 });
+
 //POST new candidates
 app.post('/candidates', function(req,res){
     var body = req.body;
@@ -70,6 +82,8 @@ app.post('/candidates', function(req,res){
 });
 
 //..................... end of POST requests .........................
+
+
 
 app.listen(PORT, function(){
     console.log('Express server started');

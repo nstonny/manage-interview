@@ -3,7 +3,7 @@ var managers = [{
     id: 1,
     name: 'Angela Walker',
     availability:{
-        date: ['Monday', 'Wednesday'],
+        day: ['Monday', 'Wednesday'],
         time: ['10.00-12.00', '13.00-15.30']
     }
 },
@@ -19,7 +19,7 @@ var candidates = [{
     id: 1,
     name: 'Anna Bass',
     availability:{
-        date: ['Monday', 'Friday'],
+        day: ['Monday', 'Friday'],
         time: ['10.00-12.00', '11.00-12.00']
     }
 },
