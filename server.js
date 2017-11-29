@@ -15,13 +15,27 @@ app.use(bodyParser.json());
 //..................... GET requests .........................
 app.get('/', function(req, res){
     res.send('Welcome to manage interview app');
-});
+}); 
 //GET all managers
 app.get('/managers', function(req, res){
     res.json(managers);
 });
+
+
+
 //GET all candidates
 app.get('/candidates', function(req, res){
+    // db.candidate.findAll().then(function(candidate){
+    //     if(!!candidate){
+    //         res.json(candidate.toJSON());
+    //     }else{
+    //         res.status(404).send();
+    //     }
+
+    // }, function(e){
+    //     res.status(500).send();
+
+    // });  
     res.json(candidates);
 });
 
@@ -50,7 +64,7 @@ app.get('/candidates/:id', function(req,res){
     }, function(e){
         res.status(500).send();
 
-    });    
+    });     
 });
 //..................... end of GET requests .........................
 
@@ -108,21 +122,27 @@ app.delete('/managers/:id', function(req, res){
         managers = _.without(managers, matchedManager);
         res.json(matchedManager);
     }
-
-
 });
 
 // DELETE request for candidates by id
 app.delete('/candidates/:id', function(req,res){
-    var candidateId = parseInt(req.params.id);
-    var matchedCandidate = _.findWhere(candidates, {id: candidateId});
+    var candidateId = parseInt(req.params.id, 10);
 
-    if(!matchedCandidate){
-        res.status(404).json({"error": "no candidate found with that id"});
-    }else{
-        candidates = _.without(candidates, matchedCandidate);
-        res.json(matchedCandidate);
-    }
+    db.candidate.destroy({
+        where: {
+            id: candidateId
+        }
+    }).then(function(rowsDeleted){
+        if(rowsDeleted === 0){
+            res.status(404).json({
+                "error": 'No candidates with id'
+            })
+        }else{
+            res.status(204).send();
+        }
+    }, function(){
+        res.status(500).send();
+    })    
 });
 //..................... end of DELETE requests .........................
 
