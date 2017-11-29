@@ -72,7 +72,7 @@ app.post('/managers', function(req,res){
 
 //POST new candidates
 app.post('/candidates', function(req,res){
-    var body = _.pick(req.body, 'name', 'availability');
+    var body = _.pick(req.body, 'name', 'managers');
 
     // trim name, check for string, non-zero length, 
     // check availability.day for array, empty
