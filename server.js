@@ -57,9 +57,17 @@ app.get('/employees/:id', function(req, res){
 app.get('/availabilities/:id', function(req,res){
     var employeeId = parseInt(req.params.id);
     db.employee.findById(employeeId).then(function (employee) {
-        employee.getAvailabilities().then(function (availabilities) {
-            res.json(availabilities);
-        });
+        if(employee){
+            employee.getAvailabilities().then(function (availabilities) {                
+                res.json(availabilities);
+            });
+        }else{
+            res.status(404).send({
+                "error": "no employee found with that id"
+            })
+        }
+    }, function(e){
+        res.status(500).send();
     });
 });
 
@@ -86,7 +94,10 @@ app.get('/candidates/:id', function(req,res){
 // POST new employees
 app.post('/employees', function(req,res){
 
-    var body = _.pick(req.body, 'name');    
+    var body = _.pick(req.body, 'name');
+    if(_.isString(body.name)){
+        body.name = body.name.trim();
+    }       
     db.employee.create(body).then(function (employee) {
         res.json(employee.toJSON());
     }, function (e) {
@@ -94,7 +105,7 @@ app.post('/employees', function(req,res){
     });    
 });
 
-// POST new availability
+// POST new availability using employeeId for association
 app.post('/availabilities', function(req,res){    
     var body = _.pick(req.body, 'day', 'time', 'employeeId');
     var employeeId = parseInt(body.employeeId);
@@ -102,25 +113,29 @@ app.post('/availabilities', function(req,res){
 
     db.availability.create(body).then(function(availability){        
         db.employee.findById(employeeId).then(function(employee){
-
-            employee.addAvailability(availability).then(function(){
-                return availability.reload();
-            }).then(function(){
-                res.json(availability.toJSON());
+            if(employee){
+                employee.addAvailability(availability).then(function(){
+                    return availability.reload();
+                }).then(function(){
+                    res.json(availability.toJSON());
+                });
+        }else{
+            res.status(404).json({
+                "error": "no employee with this id"
             });
-
+          }
         });
     }, function(e){
         res.status(400).json(e);
-
-    });     
-    
-    });
+    }); 
+});
 
 //POST new candidates
 app.post('/candidates', function(req,res){
     var body = _.pick(req.body, 'name', 'managers');
-
+    if(_.isString(body.name)){
+        body.name = body.name.trim();
+    }
     db.candidate.create(body).then(function(candidate){
         res.json(candidate.toJSON());
     }, function (e){
@@ -141,7 +156,7 @@ app.delete('/employees/:id', function(req, res){
     }).then(function(rowsDeleted){
         if(rowsDeleted === 0){
             res.status(404).json({
-                "error": 'No candidates with id'
+                "error": 'No candidates with this id'
             })
         }else{
             res.status(204).send();
@@ -151,26 +166,24 @@ app.delete('/employees/:id', function(req, res){
     })   
 });
 
-//DELETE availabilities by employee id
+//DELETE availabilities based on availability id
 app.delete('/availabilities/:id', function(req,res){
-    var employeeId = parseInt(req.params.id);
-    db.employee.findById(employeeId).then(function (employee) {
-        db.availability.destroy({
-            where: {
-                employeeId: employeeId
-            }
-        }).then(function(rowsDeleted){
-            if(rowsDeleted === 0){
-                res.status(404).json({
-                    "error": 'No availability with this id'
-                })
-            }else{
-                res.status(204).send();
-            }
-        }, function(){
-            res.status(500).send();
-        })   
-    });
+    var availabilityId = parseInt(req.params.id);
+    db.availability.destroy({
+        where: {
+            id: availabilityId
+        }
+    }).then(function(rowsDeleted){
+        if(rowsDeleted === 0){
+            res.status(404).json({
+                "error": "No availability with this id"
+            })
+        }else{
+            res.status(204).send();
+        }
+    }, function(){
+        res.status(500).send();
+    });    
 });
 
 // DELETE request for candidates by id
@@ -184,7 +197,7 @@ app.delete('/candidates/:id', function(req,res){
     }).then(function(rowsDeleted){
         if(rowsDeleted === 0){
             res.status(404).json({
-                "error": 'No candidates with id'
+                "error": 'No candidates with this id'
             })
         }else{
             res.status(204).send();
@@ -204,9 +217,11 @@ app.put('/employees/:id', function(req,res){
     var attributes = {};
     
     if(body.hasOwnProperty('name')){
+        if(_.isString(body.name)){
+            body.name = body.name.trim();
+        }
         attributes.name = body.name;
-    }
-    
+    }    
     db.employee.findById(employeeId).then(function(employee){
         if(employee){
             return employee.update(attributes).then(function(employee){
@@ -222,12 +237,10 @@ app.put('/employees/:id', function(req,res){
     })
 });
 
-// PUT requests for availability by employee id
+// PUT requests for availability by availability id
 app.put('/availabilities/:id', function(req,res){
     var availabilityId = parseInt(req.params.id, 10);
-    var body = _.pick(req.body, 'day', 'time');
-    var employee = _.pick(req.body, 'employeeId');;
-    var employeeId = parseInt(employee.employeeId);
+    var body = _.pick(req.body, 'day', 'time');    
     var attributes = {};
 
     if (body.hasOwnProperty('day')) {
@@ -264,6 +277,9 @@ app.put('/candidates/:id', function(req,res){
     var attributes = {};
     
     if(body.hasOwnProperty('name')){
+        if(_.isString(body.name)){
+            body.name = body.name.trim();
+        }
         attributes.name = body.name;
     }
     if(body.hasOwnProperty('managers')){
@@ -287,6 +303,38 @@ app.put('/candidates/:id', function(req,res){
 
 
 //..................... end of PUT requests .........................
+
+//....................GET time slots by candidates id...............
+
+app.get('/timeslots/:id', function(req,res){
+    var candidateId = parseInt(req.params.id);
+    var where = {};
+
+    db.candidate.findById(candidateId).then(function(candidate){
+        if(!!candidate){
+            where.employeeId ={
+                $in: [candidate.managers]
+            };
+            db.availability.findAll({
+                where: where
+
+            }).then(function (availabilities) {
+                res.json(availabilities);
+            });
+
+
+        }else{
+            res.status(404).send();
+        }
+
+    }, function(e){
+        res.status(500).send();
+
+    });
+});
+//....................end of GET time slots by candidates id
+
+
 
 db.sequelize.sync({
     // force:true

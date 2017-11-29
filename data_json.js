@@ -40,3 +40,21 @@ var candidates = [
     }
 ];
 // .......................................................................
+//Postman
+// POST employee
+// {
+// 	"name": "Lia Shelton"
+// }
+
+// POST candidates
+// {	
+// 	"name": "Darrell Gill",
+//     "managers": "['Angela Walker', 'Lia Shelton']"
+// }
+// POST availability
+// {
+// 	"employeeId": "2",
+// 	"day": "Wednesday",
+// 	"time": "13.00-15.30"
+	
+// }    
