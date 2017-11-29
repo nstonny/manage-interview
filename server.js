@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ =  require('underscore');
+var db = require('./db.js');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -54,6 +55,12 @@ app.post('/managers', function(req,res){
 
     var body = _.pick(req.body, 'name', 'availability');
 
+    // db.manager.create(body).then(function(manager){
+    //     res.json(manager.toJSON());
+    // }, function(e){
+    //     res.status(400).json(e);
+    // })
+
     // trim name, check for string, non-zero length, 
     // check availability.day for array, empty
     // check availability.time for array, empty
@@ -74,23 +81,11 @@ app.post('/managers', function(req,res){
 app.post('/candidates', function(req,res){
     var body = _.pick(req.body, 'name', 'managers');
 
-    // trim name, check for string, non-zero length, 
-    // check availability.day for array, empty
-    // check availability.time for array, empty
-
-    // if(_.isString(body.name) || _.isArray(body.availability.day) || _.isArray(body.availability.time || 
-    // body.availability.day.length == 0 || body.availability.time.length == 0)){
-
-    if(!_.isString(body.name)){    
-        return res.status(400).send();
-    }  
-
-    // add id field
-    body.id = candidateNextId++;
-    // push body into array
-    candidates.push(body);
-    res.json(body);
-
+    db.candidate.create(body).then(function(candidate){
+        res.json(candidate.toJSON());
+    }, function (e){
+        res.status(400).json(e);
+    });
 });
 //..................... end of POST requests .........................
 
@@ -174,6 +169,12 @@ app.put('/candidates/:id', function(req,res){
 
 //..................... end of PUT requests .........................
 
-app.listen(PORT, function(){
-    console.log('Express server started');
+db.sequelize.sync().then(function(){
+    app.listen(PORT, function(){
+        console.log('Express listening on port ' + PORT + '!');
+    });
 });
+
+// app.listen(PORT, function(){
+//     console.log('Express listening on port ' + PORT + '!');
+// });
