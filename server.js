@@ -21,22 +21,13 @@ app.get('/managers', function(req, res){
     res.json(managers);
 });
 
-
-
 //GET all candidates
 app.get('/candidates', function(req, res){
-    // db.candidate.findAll().then(function(candidate){
-    //     if(!!candidate){
-    //         res.json(candidate.toJSON());
-    //     }else{
-    //         res.status(404).send();
-    //     }
-
-    // }, function(e){
-    //     res.status(500).send();
-
-    // });  
-    res.json(candidates);
+    db.candidate.findAll().then(function(candidates){
+        res.json(candidates);
+    }, function(e){
+        res.status(500).send();
+    })    
 });
 
 //GET manager by id
@@ -174,22 +165,29 @@ app.put('/managers/:id', function(req,res){
 // PUT requests for candidates
 app.put('/candidates/:id', function(req,res){
     var candidateId = parseInt(req.params.id, 10);
-    var matchedCandidate = _.findWhere(candidates, {id: candidateId});
-    var body = _.pick(req.body, 'name', 'availability');
-    var validAttributes = {};
-
-    if(!matchedCandidate){
-        return res.status(404).send();
+    var body = _.pick(req.body, 'name', 'managers');
+    var attributes = {};
+    
+    if(body.hasOwnProperty('name')){
+        attributes.name = body.name;
     }
-    if(body.hasOwnProperty('name') && _.isString(body.name)){
-        validAttributes.name = body.name;
-    }else if(body.hasOwnProperty('name'))
-    {
-        return res.status(400).send();
+    if(body.hasOwnProperty('managers')){
+        attributes.managers = body.managers;
     }
-    _.extend(matchedCandidate, validAttributes);
-    res.json(matchedCandidate);
 
+    db.candidate.findById(candidateId).then(function(candidate){
+        if(candidate){
+            return candidate.update(attributes).then(function(candidate){
+                res.json(candidate.toJSON());
+            }, function(e){
+                res.status(400).json(e);
+            })   
+        }else{
+            res.status(404).send();
+        }
+    }, function(){
+        res.status(500).send();
+    })
 });
 
 
@@ -200,7 +198,3 @@ db.sequelize.sync().then(function(){
         console.log('Express listening on port ' + PORT + '!');
     });
 });
-
-// app.listen(PORT, function(){
-//     console.log('Express listening on port ' + PORT + '!');
-// });
