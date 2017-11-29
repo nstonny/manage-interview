@@ -193,7 +193,7 @@ app.put('/candidates/:id', function(req,res){
 
 //..................... end of PUT requests .........................
 
-db.sequelize.sync().then(function(){
+db.sequelize.sync({force:true}).then(function(){
     app.listen(PORT, function(){
         console.log('Express listening on port ' + PORT + '!');
     });

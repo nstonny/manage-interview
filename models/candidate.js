@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes){
                 len: [1, 250]
             }
         },
-        managers:{
+        managers:{            
             type: DataTypes.STRING,
             allowNull: false,
             validate:{
