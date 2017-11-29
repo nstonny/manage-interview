@@ -39,12 +39,18 @@ app.get('/managers/:id', function(req, res){
 //GET candidate by id
 app.get('/candidates/:id', function(req,res){
     var candidateId = parseInt(req.params.id);
-    var matchedCandidate = _.findWhere(candidates, {id: candidateId});
-    if(matchedCandidate){
-        res.json(matchedCandidate);
-    }else{
-        res.status(404).send();
-    }
+
+    db.candidate.findById(candidateId).then(function(candidate){
+        if(!!candidate){
+            res.json(candidate.toJSON());
+        }else{
+            res.status(404).send();
+        }
+
+    }, function(e){
+        res.status(500).send();
+
+    });    
 });
 //..................... end of GET requests .........................
 
