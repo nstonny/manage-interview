@@ -14,13 +14,15 @@ if(env === 'production'){
     });
 }
 
-
-
 var db = {};
 
-// db.manager = sequelize.import(__dirname + '/models/manager.js');
+db.employee = sequelize.import(__dirname + '/models/employee.js');
 db.candidate = sequelize.import(__dirname + '/models/candidate.js');
+db.availability = sequelize.import(__dirname + '/models/availability.js');
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+db.availability.belongsTo(db.employee);
+db.employee.hasMany(db.availability);
 
 module.exports = db;

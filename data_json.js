@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------
-var managers = [
+var employees = [
 {
 name: 'Angela Walker',
 availability: [{
