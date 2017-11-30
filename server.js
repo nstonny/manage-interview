@@ -13,7 +13,7 @@ app.get('/', function(req, res){
 }); 
 
 //.................Employee.......................
-//GET all employees
+// GET all employees
 app.get('/employees', function(req, res){
     db.employee.findAll().then(function (employees) {
         res.json(employees);
