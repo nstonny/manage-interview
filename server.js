@@ -295,10 +295,9 @@ app.get('/timeslots/:id', function(req,res){
             db.availability.findAll({
                 where: where
             }).then(function (availabilities) {
-                console.log(availabilities);
                 if(availabilities.length === 0){
                     res.status(404).send({
-                        "error": "No available time slot for next week"
+                        "error": "No available time slot for next week for this candidate"
                     })
                 }else{
                     res.json(availabilities);
