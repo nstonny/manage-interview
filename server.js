@@ -5,11 +5,7 @@ var app = express();
 var PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-
-//replace with public folder
-app.get('/', function(req, res){
-    res.send('Welcome to manage interview app');
-}); 
+app.use(express.static('public'));
 
 app.use('/employees', require('./routes/employee.js'));
 app.use('/candidates', require('./routes/candidate.js'));
