@@ -12,7 +12,7 @@ app.get('/', function(req, res){
 }); 
 
 app.use('/employees', require('./routes/employee.js'));
-
+app.use('/candidates', require('./routes/candidate.js'));
 
 db.sequelize.sync({
     //force:true
