@@ -16,7 +16,6 @@ app.use('/candidates', require('./routes/candidate.js'));
 app.use('/availabilities', require('./routes/availabilities.js'));
 
 db.sequelize.sync({
-    //force:true
     }).then(function(){
     app.listen(PORT, function(){
         console.log('Express listening on port ' + PORT + '!');
