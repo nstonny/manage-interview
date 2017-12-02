@@ -23,7 +23,7 @@ db.availability = sequelize.import(__dirname + '/models/availability.js');
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.availability.belongsTo(db.employee);
-db.employee.hasMany(db.availability);
+db.availability.belongsTo(db.employee, {foreignKeyConstraint: true, onDelete: 'CASCADE', hooks: true});
+db.employee.hasMany(db.availability, {foreignKeyConstraint: true, onDelete: 'CASCADE', hooks: true});
 
 module.exports = db;
