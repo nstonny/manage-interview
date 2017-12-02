@@ -5,7 +5,6 @@ var db = require('../db.js');
 var middleware = require('../middleware.js')(db);
 var route = router.route('/:id');
 
-
 route
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
