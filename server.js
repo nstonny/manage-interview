@@ -5,6 +5,7 @@ var middleware = require('./middleware.js');
 var app = express();
 var PORT = process.env.PORT || 3000;
 
+app.set('port', PORT);
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
