@@ -3,6 +3,7 @@ module.exports = function(sequelize, DataTypes) {
         day: {
             type: DataTypes.STRING,
             allowNull: false,
+            trim: true,
             validate:{
                 len: [1, 250]
             }
@@ -10,6 +11,7 @@ module.exports = function(sequelize, DataTypes) {
         time: {
             type: DataTypes.STRING,
             allowNull: false,
+            trim: true,
             validate:{
                 len: [1, 250]
             }

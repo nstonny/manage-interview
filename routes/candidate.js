@@ -14,10 +14,7 @@ allRoute
         })
     })
     .post(function (req, res) {
-        var body = _.pick(req.body, 'name', 'managers');
-        if (_.isString(body.name)) {
-            body.name = body.name.trim();
-        }
+        var body = _.pick(req.body, 'name', 'managers');        
         db.candidate.create(body).then(function (candidate) {
             res.json(candidate.toJSON());
         }, function (e) {

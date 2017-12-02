@@ -14,10 +14,7 @@ allRoute
         });
     })
     .post(function (req, res) {
-        var body = _.pick(req.body, 'name');
-        if (_.isString(body.name)) {
-            body.name = body.name.trim();
-        }
+        var body = _.pick(req.body, 'name');        
         db.employee.create(body).then(function (employee) {
             res.json(employee.toJSON());
         }, function (e) {
@@ -60,7 +57,6 @@ idRoute
         var employeeId = parseInt(req.params.id, 10);
         var body = _.pick(req.body, 'name');
         var attributes = {};
-
         if (body.hasOwnProperty('name')) {
             if (_.isString(body.name)) {
                 body.name = body.name.trim();

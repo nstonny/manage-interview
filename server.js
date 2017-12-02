@@ -7,6 +7,7 @@ var PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+app.use('/users', require('./routes/user.js'));
 app.use('/employees', require('./routes/employee.js'));
 app.use('/candidates', require('./routes/candidate.js'));
 app.use('/availabilities', require('./routes/availabilities.js'));
