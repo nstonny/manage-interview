@@ -16,6 +16,7 @@ if(env === 'production'){
 
 var db = {};
 
+db.user = sequelize.import(__dirname + '/models/user.js');
 db.employee = sequelize.import(__dirname + '/models/employee.js');
 db.candidate = sequelize.import(__dirname + '/models/candidate.js');
 db.availability = sequelize.import(__dirname + '/models/availability.js');

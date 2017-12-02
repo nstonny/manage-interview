@@ -1,4 +1,4 @@
-module.exports = function(sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes){
     return sequelize.define('employee', {
         name: {
             type: DataTypes.STRING,
@@ -9,3 +9,4 @@ module.exports = function(sequelize, DataTypes) {
         }
     })
 };
+
