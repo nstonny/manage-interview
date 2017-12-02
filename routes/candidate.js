@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var allRoute = router.route('/');
-var idRoute = router.route('/:id');
 var db = require('../db.js');
 var _ = require('underscore');
+var middleware = require('../middleware.js')(db);
+var allRoute = router.route('/');
+var idRoute = router.route('/:id');
 
 allRoute
     .get(function (req, res) {
+        middleware.requireAuthentication(req,res);
         db.candidate.findAll().then(function (candidates) {
             res.json(candidates);
         }, function (e) {
@@ -14,6 +16,7 @@ allRoute
         })
     })
     .post(function (req, res) {
+        middleware.requireAuthentication(req,res);
         var body = _.pick(req.body, 'name', 'managers');        
         db.candidate.create(body).then(function (candidate) {
             res.json(candidate.toJSON());
@@ -24,6 +27,7 @@ allRoute
 
 idRoute
     .get(function (req, res) {
+        middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id);
         db.candidate.findById(candidateId).then(function (candidate) {
             if (!!candidate) {
@@ -36,6 +40,7 @@ idRoute
         });
     })
     .delete(function (req, res) {
+        middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id, 10);
         db.candidate.destroy({
             where: {
@@ -54,6 +59,7 @@ idRoute
         })
     })
     .put(function (req, res) {
+        middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id, 10);
         var body = _.pick(req.body, 'name', 'managers');
         var attributes = {};

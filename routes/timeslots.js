@@ -1,11 +1,14 @@
 
 var express = require('express');
 var router = express.Router();
-var route = router.route('/:id');
 var db = require('../db.js');
+var middleware = require('../middleware.js')(db);
+var route = router.route('/:id');
+
 
 route
     .get(function (req, res) {
+        middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id);
         var where = {};
         db.candidate.findById(candidateId).then(function (candidate) {
