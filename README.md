@@ -10,7 +10,7 @@ The instructions provide steps to get this app running on your machine.
 
 Download and install Node.js
 ```
-*[Nodejs](https://nodejs.org/en/download/)
+* [Nodejs](https://nodejs.org/en/download/)
 ```
 
 ## Deployment
@@ -27,6 +27,15 @@ Start the server using
 npm start
 ```
 When run locally, the server is set to run at http://localhost:3000 or http://127.0.0.1:3000
+
+## API Documentation
+
+Instructions on how to use the APIs are prvided in a pdf included in the project folder.
+The pdf can be found at
+
+```
+* [API Documentation](manage-interview/docs/manage-interview-api-doc.pdf)
+```
 
 
 
