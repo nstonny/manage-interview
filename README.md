@@ -10,7 +10,7 @@ The instructions provide steps to get this app running on your machine.
 
 Download and install Node.js
 ```
-[Nodejs](https://nodejs.org/en/download/)
+*[Nodejs](https://nodejs.org/en/download/)
 ```
 
 ## Deployment
