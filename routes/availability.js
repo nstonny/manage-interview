@@ -7,7 +7,6 @@ var middleware = require('../middleware.js')(db);
 var allRoute = router.route('/');
 var idRoute = router.route('/:id');
 
-
 allRoute
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
@@ -58,6 +57,7 @@ idRoute
     .delete(function (req, res) {
         middleware.requireAuthentication(req,res);
         var availabilityId = parseInt(req.params.id);
+
         db.availability.destroy({
             where: {
                 id: availabilityId

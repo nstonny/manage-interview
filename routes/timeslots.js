@@ -22,7 +22,7 @@ route
                     where: where
                 }).then(function (availabilities) {
                     if (availabilities.length === 0) {
-                        error.notFound(res,"No available time slot for next week for this candidate");
+                        error.notFound(res,"No available timeslot for next week for this candidate");
                     } else {
                         res.json(availabilities);
                     }

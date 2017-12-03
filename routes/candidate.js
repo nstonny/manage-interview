@@ -62,10 +62,7 @@ idRoute
         var candidateId = parseInt(req.params.id, 10);
         var body = _.pick(req.body, 'name', 'managers');
         var attributes = {};
-        if (body.hasOwnProperty('name')) {
-            if (_.isString(body.name)) {
-                body.name = body.name.trim();
-            }
+        if (body.hasOwnProperty('name')) {            
             attributes.name = body.name;
         }
         if (body.hasOwnProperty('managers')) {

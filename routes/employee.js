@@ -9,7 +9,7 @@ var idRoute = router.route('/:id');
 
 allRoute
     .get(function (req, res) {
-        middleware.requireAuthentication(req,res);
+        middleware.requireAuthentication(req,res);        
         db.employee.findAll().then(function (employees) {
             res.json(employees);
         }, function () {
@@ -43,6 +43,11 @@ idRoute
     .delete(function (req, res) {
         middleware.requireAuthentication(req,res);    
         var employeeId = parseInt(req.params.id, 10);
+        db.availability.destroy({
+            where: {
+                employeeId: employeeId
+            }
+        });
         db.employee.destroy({
             where: {
                 id: employeeId
@@ -62,10 +67,7 @@ idRoute
         var employeeId = parseInt(req.params.id, 10);
         var body = _.pick(req.body, 'name');
         var attributes = {};
-        if (body.hasOwnProperty('name')) {
-            if (_.isString(body.name)) {
-                body.name = body.name.trim();
-            }
+        if (body.hasOwnProperty('name')) {            
             attributes.name = body.name;
         }
         db.employee.findById(employeeId).then(function (employee) {

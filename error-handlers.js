@@ -1,5 +1,5 @@
 var errorHandlers = {
-    serverError: function(res,msg){
+    serverError: function(res){
         res.status(500).send({
             "error": "internal server error"
         });
