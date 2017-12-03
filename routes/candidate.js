@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db.js');
 var _ = require('underscore');
+var error = require('../error-handlers');
 var middleware = require('../middleware.js')(db);
 var allRoute = router.route('/');
 var idRoute = router.route('/:id');
@@ -11,8 +12,8 @@ allRoute
         middleware.requireAuthentication(req,res);
         db.candidate.findAll().then(function (candidates) {
             res.json(candidates);
-        }, function (e) {
-            res.status(500).send();
+        }, function () {
+            error.serverError(res);
         })
     })
     .post(function (req, res) {
@@ -20,8 +21,8 @@ allRoute
         var body = _.pick(req.body, 'name', 'managers');        
         db.candidate.create(body).then(function (candidate) {
             res.json(candidate.toJSON());
-        }, function (e) {
-            res.status(400).json(e);
+        }, function (errMsg) {
+            error.badRequest(res,errMsg);
         });
     });
 
@@ -32,11 +33,11 @@ idRoute
         db.candidate.findById(candidateId).then(function (candidate) {
             if (!!candidate) {
                 res.json(candidate.toJSON());
-            } else {
-                res.status(404).send();
+            } else {                
+                error.notFound(res,"No candidate with this id");
             }
-        }, function (e) {
-            res.status(500).send();
+        }, function () {
+            error.serverError(res);
         });
     })
     .delete(function (req, res) {
@@ -47,15 +48,13 @@ idRoute
                 id: candidateId
             }
         }).then(function (rowsDeleted) {
-            if (rowsDeleted === 0) {
-                res.status(404).json({
-                    "error": 'No candidates with this id'
-                })
+            if (rowsDeleted === 0) {                
+                error.notFound(res,"No candidate with this id");
             } else {
                 res.status(204).send();
             }
         }, function () {
-            res.status(500).send();
+            error.serverError(res);
         })
     })
     .put(function (req, res) {
@@ -76,15 +75,14 @@ idRoute
             if (candidate) {
                 return candidate.update(attributes).then(function (candidate) {
                     res.json(candidate.toJSON());
-                }, function (e) {
-                    res.status(400).json(e);
+                }, function (errMsg) {
+                    error.badRequest(res,errMsg);
                 })
             } else {
-                res.status(404).send();
+                error.notFound(res,"No candidate with this id");
             }
         }, function () {
-            res.status(500).send();
+            error.serverError(res);
         })
     });
-
 module.exports = router;

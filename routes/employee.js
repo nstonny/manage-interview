@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../db.js');
 var _ = require('underscore');
+var error = require('../error-handlers');
 var middleware = require('../middleware.js')(db);
 var allRoute = router.route('/');
 var idRoute = router.route('/:id');
@@ -11,8 +12,8 @@ allRoute
         middleware.requireAuthentication(req,res);
         db.employee.findAll().then(function (employees) {
             res.json(employees);
-        }, function (e) {
-            res.status(500).send();
+        }, function () {
+            error.serverError(res);
         });
     })
     .post(function (req, res) {
@@ -20,8 +21,8 @@ allRoute
         var body = _.pick(req.body, 'name');            
         db.employee.create(body).then(function (employee) {
             res.json(employee.toJSON());
-        }, function (e) {
-            res.status(400).json(e);
+        }, function (errMsg) {
+            error.badRequest(res,errMsg);
         });
     });
 
@@ -33,10 +34,10 @@ idRoute
             if (!!employee) {
                 res.json(employee.toJSON());
             } else {
-                res.status(404).send();
+                error.notFound(res,"No employee with this id");
             }
-        }, function (e) {
-            res.status(500).send();
+        }, function () {
+            error.serverError(res);
         });
     })
     .delete(function (req, res) {
@@ -48,14 +49,12 @@ idRoute
             }
         }).then(function (rowsDeleted) {
             if (rowsDeleted === 0) {
-                res.status(404).json({
-                    "error": 'No candidates with this id'
-                })
+                error.notFound(res,"No employee with this id");
             } else {
                 res.status(204).send();
             }
         }, function () {
-            res.status(500).send();
+            error.serverError(res);
         })
     })
     .put(function (req, res) {
@@ -73,15 +72,14 @@ idRoute
             if (employee) {
                 return employee.update(attributes).then(function (employee) {
                     res.json(employee.toJSON());
-                }, function (e) {
-                    res.status(400).json(e);
+                }, function (errMsg) {
+                    error.badRequest(res,errMsg);
                 })
             } else {
-                res.status(404).send();
+                error.notFound(res,"No employee with this id");
             }
         }, function () {
-            res.status(500).send();
+            error.serverError(res);
         })
     });
-
 module.exports = router;

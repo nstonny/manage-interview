@@ -2,6 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db.js');
+var error = require('../error-handlers');
 var middleware = require('../middleware.js')(db);
 var route = router.route('/:id');
 
@@ -21,20 +22,16 @@ route
                     where: where
                 }).then(function (availabilities) {
                     if (availabilities.length === 0) {
-                        res.status(404).send({
-                            "error": "No available time slot for next week for this candidate"
-                        })
+                        error.notFound(res,"No available time slot for next week for this candidate");
                     } else {
                         res.json(availabilities);
                     }
                 });
             } else {
-                res.status(404).send({
-                    "error": "No candidate available"
-                });
+                error.notFound(res,"No candidate with this id");
             }
         }, function (e) {
-            res.status(500).send();
+            error.serverError(res);
         });
     });
 
