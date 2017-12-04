@@ -8,6 +8,14 @@ var allRoute = router.route('/');
 var idRoute = router.route('/:id');
 
 allRoute
+    /**
+    * GET route to show all candidates 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of all candidates
+    * @return {obj} res obj with internal server error
+    */
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
         db.candidate.findAll().then(function (candidates) {
@@ -16,6 +24,14 @@ allRoute
             error.serverError(res);
         })
     })
+    /**
+    * POST route to add a candidate 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the candidate to be added
+    * @return {obj} res obj with bad request error
+    */
     .post(function (req, res) {
         middleware.requireAuthentication(req,res);
         var body = _.pick(req.body, 'name', 'managers');        
@@ -27,6 +43,15 @@ allRoute
     });
 
 idRoute
+    /**
+    * GET route to show a selected candidate
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the selected candidate
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    */
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id);
@@ -40,6 +65,15 @@ idRoute
             error.serverError(res);
         });
     })
+    /**
+    * DELETE route to delete a selected candidate
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with status of no content
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    */
     .delete(function (req, res) {
         middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id, 10);
@@ -57,6 +91,16 @@ idRoute
             error.serverError(res);
         })
     })
+    /**
+    * PUT route to update a selected candidate
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the updated candidate
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    * @return {obj} res obj with bad request error
+    */
     .put(function (req, res) {
         middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id, 10);

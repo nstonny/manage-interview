@@ -7,6 +7,15 @@ var middleware = require('../middleware.js')(db);
 var route = router.route('/:id');
 
 route
+    /**
+    * GET route to show timeslots 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of all availabilities for the candidate
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    */
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
         var candidateId = parseInt(req.params.id);

@@ -14,6 +14,9 @@ app.use('/candidates', require('./routes/candidate.js'));
 app.use('/availabilities', require('./routes/availability.js'));
 app.use('/timeslots', require('./routes/timeslots.js'));
 
+/**
+ * syncs database, then starts the express app at localhost PORT
+ */
 db.sequelize.sync({
     //force:true
     }).then(function(){

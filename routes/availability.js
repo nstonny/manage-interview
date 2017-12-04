@@ -8,6 +8,14 @@ var allRoute = router.route('/');
 var idRoute = router.route('/:id');
 
 allRoute
+    /**
+    * GET route to show all availabilities 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of all availabilities
+    * @return {obj} res obj with internal server error
+    */    
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
         db.availability.findAll().then(function (availabilities) {
@@ -16,11 +24,19 @@ allRoute
             error.serverError(res);
         });
     })
+    /**
+    * POST route to add an availability 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the availability added
+    * @return {obj} res obj with bad request error
+    * @return {obj} res obj with employee not found error 
+    */
     .post(function (req, res) {
         middleware.requireAuthentication(req,res);
-        var body = _.pick(req.body, 'day', 'time', 'employeeId');
         var employeeId = parseInt(body.employeeId);
-        delete body.employeeId;//fix this
+        var body = _.pick(req.body, 'day', 'time');
         db.availability.create(body).then(function (availability) {
             db.employee.findById(employeeId).then(function (employee) {
                 if (employee) {
@@ -39,6 +55,15 @@ allRoute
     });
 
 idRoute
+    /**
+    * GET route to show a selected availabilities of a selected employee
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the availabilities
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    */    
     .get(function (req, res) {
         middleware.requireAuthentication(req,res);
         var employeeId = parseInt(req.params.id);
@@ -54,10 +79,18 @@ idRoute
             error.serverError(res);
         });
     })
+    /**
+    * DELETE route to delete a selected availability
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with status of no content
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    */
     .delete(function (req, res) {
         middleware.requireAuthentication(req,res);
         var availabilityId = parseInt(req.params.id);
-
         db.availability.destroy({
             where: {
                 id: availabilityId
@@ -72,6 +105,16 @@ idRoute
             error.serverError(res);
         });
     })
+    /**
+    * PUT route to update a selected availability
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the updated availability
+    * @return {obj} res obj with not found error 
+    * @return {obj} res obj with internal server error
+    * @return {obj} res obj with bad request error
+    */
     .put(function (req, res) {
         middleware.requireAuthentication(req,res);
         var availabilityId = parseInt(req.params.id, 10);

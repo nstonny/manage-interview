@@ -8,6 +8,14 @@ var error = require('../error-handlers');
 var bcrypt = require('bcrypt');
 
 allRoute
+    /**
+    * POST route to add a user 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the user added
+    * @return {obj} res obj with bad request error
+    */
     .post(function (req, res) {
         var body = _.pick(req.body, 'email', 'password');
         db.user.create(body).then(function (user) {
@@ -18,9 +26,17 @@ allRoute
     });
 
 loginRoute
+    /**
+    * POST route to login a user 
+    *
+    * @param {obj} req req obj 
+    * @param {obj} res res obj 
+    * @return {obj} res obj with json data of the user logged in 
+    * and with 'Auth' token in res header 
+    * @return {obj} res obj with unauthorized error
+    */
     .post(function (req, res) {
         var body = _.pick(req.body, 'email', 'password');
-
         db.user.authenticate(body).then(function (user) {
             var token = user.generateToken('authentication');
             if (token) {
