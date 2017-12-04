@@ -39,7 +39,7 @@ is printed on the console.
 Instructions on how to use the APIs are provided in a pdf included in the project folder.
 The pdf can be found at
 
-[API Documentation](manage-interview/docs/manage-interview-api-doc.pdf)
+[API Documentation](https://github.com/nstonny/manage-interview/blob/master/docs/manage-interview-api-doc.pdf)
 
 
 
