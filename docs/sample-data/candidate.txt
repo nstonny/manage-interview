@@ -1,0 +1,15 @@
+//POST requests
+{	
+	"name": "Anna Bass",
+    "managers": "1"
+}
+
+{	
+	"name": "Darrell Gill",
+    "managers": "1,3"
+}
+
+{	
+	"name": "Lewis Johnson",
+    "managers": "2"
+}

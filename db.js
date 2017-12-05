@@ -2,7 +2,6 @@
 * uses sequelize ORM object to carry out CRUD operations in database
 */
 var Sequelize = require('sequelize');
-var env = process.env.NODE_ENV || 'development';
 var sequelize;
 sequelize = new Sequelize(undefined, undefined, undefined, {
     'dialect': 'sqlite',

@@ -1,0 +1,12 @@
+//POST requests
+{
+	"name": "Hope Jones"
+}
+
+{
+	"name": "Lia Shelton"
+}
+
+{
+	"name": "Angela Walker"
+}
