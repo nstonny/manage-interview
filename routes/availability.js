@@ -15,9 +15,9 @@ allRoute
     * @param {obj} res res obj 
     * @return {obj} res obj with json data of all availabilities
     * @return {obj} res obj with internal server error
-    */    
+    */
     .get(function (req, res) {
-        middleware.requireAuthentication(req,res);
+        middleware.requireAuthentication(req, res);
         db.availability.findAll().then(function (availabilities) {
             res.json(availabilities);
         }, function () {
@@ -34,23 +34,24 @@ allRoute
     * @return {obj} res obj with employee not found error 
     */
     .post(function (req, res) {
-        middleware.requireAuthentication(req,res);
-        var employeeId = parseInt(body.employeeId);
+        middleware.requireAuthentication(req, res);
+        var employeeId = parseInt(req.body.employeeId);
         var body = _.pick(req.body, 'day', 'time');
-        db.availability.create(body).then(function (availability) {
-            db.employee.findById(employeeId).then(function (employee) {
-                if (employee) {
+
+        db.employee.findById(employeeId).then(function (employee) {
+            if (employee) {
+                db.availability.create(body).then(function (availability) {
                     employee.addAvailability(availability).then(function () {
                         return availability.reload();
                     }).then(function () {
                         res.json(availability.toJSON());
                     });
-                } else {
-                    error.notFound(res,"No employee with this id");
-                }
-            });
+                });
+            } else {
+                error.notFound(res, "No employee with this id");
+            }
         }, function (errMsg) {
-            error.badRequest(res,errMsg);
+            error.badRequest(res, errMsg);
         });
     });
 
@@ -63,9 +64,9 @@ idRoute
     * @return {obj} res obj with json data of the availabilities
     * @return {obj} res obj with not found error 
     * @return {obj} res obj with internal server error
-    */    
+    */
     .get(function (req, res) {
-        middleware.requireAuthentication(req,res);
+        middleware.requireAuthentication(req, res);
         var employeeId = parseInt(req.params.id);
         db.employee.findById(employeeId).then(function (employee) {
             if (employee) {
@@ -73,7 +74,7 @@ idRoute
                     res.json(availabilities);
                 });
             } else {
-                error.notFound(res,"No employee with this id");
+                error.notFound(res, "No employee with this id");
             }
         }, function (e) {
             error.serverError(res);
@@ -89,7 +90,7 @@ idRoute
     * @return {obj} res obj with internal server error
     */
     .delete(function (req, res) {
-        middleware.requireAuthentication(req,res);
+        middleware.requireAuthentication(req, res);
         var availabilityId = parseInt(req.params.id);
         db.availability.destroy({
             where: {
@@ -97,7 +98,7 @@ idRoute
             }
         }).then(function (rowsDeleted) {
             if (rowsDeleted === 0) {
-                error.notFound(res,"No availability with this id");
+                error.notFound(res, "No availability with this id");
             } else {
                 res.status(204).send();
             }
@@ -116,7 +117,7 @@ idRoute
     * @return {obj} res obj with bad request error
     */
     .put(function (req, res) {
-        middleware.requireAuthentication(req,res);
+        middleware.requireAuthentication(req, res);
         var availabilityId = parseInt(req.params.id, 10);
         var body = _.pick(req.body, 'day', 'time');
         var attributes = {};
@@ -135,10 +136,10 @@ idRoute
                 availability.update(attributes).then(function (availability) {
                     res.json(availability.toJSON());
                 }, function (errMsg) {
-                    error.badRequest(res,errMsg);
+                    error.badRequest(res, errMsg);
                 });
             } else {
-                error.notFound(res,"No availability with this id");
+                error.notFound(res, "No availability with this id");
             }
         }, function () {
             error.serverError(res);

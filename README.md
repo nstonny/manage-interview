@@ -11,9 +11,6 @@ The instructions provide steps to get this app running on your machine.
 Download and install Node.js
 * [Nodejs](https://nodejs.org/en/download/)
 
-Download and install Sqlite browser
-* [Sqlite browser](http://sqlitebrowser.org/)
-
 Download and install Postman
 * [Postman](https://www.getpostman.com/)
 
@@ -39,9 +36,10 @@ is printed on the console.
 Instructions on how to use the APIs are provided in a pdf included in the project folder.
 The pdf can be found at
 
-[API Documentation](https://github.com/nstonny/manage-interview/blob/master/docs/manage-interview-api-doc.pdf)
+[Manage Interview API Documentation](https://github.com/nstonny/manage-interview/blob/master/docs/manage-interview-api-doc.pdf)
 
-
+Sample data to test endpoints can be found at
+[Sample data]()
 
 
 
