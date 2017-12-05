@@ -17,9 +17,7 @@ app.use('/timeslots', require('./routes/timeslots.js'));
 /**
  * syncs database, then starts the express app at localhost PORT
  */
-db.sequelize.sync({
-    //force:true
-    }).then(function(){
+db.sequelize.sync().then(function(){
     app.listen(PORT, function(){
         console.log('Express listening on port ' + PORT + '!');
     });
