@@ -38,6 +38,8 @@ The pdf can be found at
 
 [Manage Interview API Documentation](https://github.com/nstonny/manage-interview/blob/master/docs/manage-interview-api-doc.pdf)
 
+## Sample data
+
 Sample data to test endpoints can be found at
 [Sample data](https://github.com/nstonny/manage-interview/tree/master/docs/sample-data)
 
