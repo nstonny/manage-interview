@@ -43,10 +43,6 @@ The pdf can be found at
 Sample data to test endpoints can be found at
 [Sample data](https://github.com/nstonny/manage-interview/tree/master/docs/sample-data)
 
-A user with {"email": "admin@example.com", "password": "admin12345!"} has already been created as an example. The Auth token for this user is located at
-[Admin user](https://github.com/nstonny/manage-interview/blob/master/docs/sample-data/Auth.txt).
-If you choose not to create a new user, use this Auth token to test the endpoint directly.
-
 
 
 

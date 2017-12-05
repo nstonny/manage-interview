@@ -17,12 +17,16 @@ allRoute
     * @return {obj} res obj with internal server error
     */
     .get(function (req, res) {
-        middleware.requireAuthentication(req,res);
-        db.candidate.findAll().then(function (candidates) {
-            res.json(candidates);
-        }, function () {
-            error.serverError(res);
-        })
+        var token = req.get('Auth');                    
+        db.user.findByToken(token).then(function (user) {
+            db.candidate.findAll().then(function (candidates) {
+                res.json(candidates);
+            }, function () {
+                error.serverError(res);
+            })
+        }, function(){
+            error.unauthorized(res);
+        });
     })
     /**
     * POST route to add a candidate 
@@ -33,12 +37,16 @@ allRoute
     * @return {obj} res obj with bad request error
     */
     .post(function (req, res) {
-        middleware.requireAuthentication(req,res);
-        var body = _.pick(req.body, 'name', 'managers');        
-        db.candidate.create(body).then(function (candidate) {
-            res.json(candidate.toJSON());
-        }, function (errMsg) {
-            error.badRequest(res,errMsg);
+        var token = req.get('Auth');                    
+        db.user.findByToken(token).then(function (user) {
+            var body = _.pick(req.body, 'name', 'managers');        
+            db.candidate.create(body).then(function (candidate) {
+                res.json(candidate.toJSON());
+            }, function (errMsg) {
+                error.badRequest(res,errMsg);
+            });
+        }, function(){
+            error.unauthorized(res);
         });
     });
 
@@ -53,16 +61,20 @@ idRoute
     * @return {obj} res obj with internal server error
     */
     .get(function (req, res) {
-        middleware.requireAuthentication(req,res);
-        var candidateId = parseInt(req.params.id);
-        db.candidate.findById(candidateId).then(function (candidate) {
-            if (!!candidate) {
-                res.json(candidate.toJSON());
-            } else {                
-                error.notFound(res,"No candidate with this id");
-            }
-        }, function () {
-            error.serverError(res);
+        var token = req.get('Auth');                    
+        db.user.findByToken(token).then(function (user) {
+            var candidateId = parseInt(req.params.id);
+            db.candidate.findById(candidateId).then(function (candidate) {
+                if (!!candidate) {
+                    res.json(candidate.toJSON());
+                } else {                
+                    error.notFound(res,"No candidate with this id");
+                }
+            }, function () {
+                error.serverError(res);
+            });
+        }, function(){
+            error.unauthorized(res);
         });
     })
     /**
@@ -75,20 +87,24 @@ idRoute
     * @return {obj} res obj with internal server error
     */
     .delete(function (req, res) {
-        middleware.requireAuthentication(req,res);
-        var candidateId = parseInt(req.params.id, 10);
-        db.candidate.destroy({
-            where: {
-                id: candidateId
-            }
-        }).then(function (rowsDeleted) {
-            if (rowsDeleted === 0) {                
-                error.notFound(res,"No candidate with this id");
-            } else {
-                res.status(204).send();
-            }
-        }, function () {
-            error.serverError(res);
+        var token = req.get('Auth');                    
+        db.user.findByToken(token).then(function (user) {
+            var candidateId = parseInt(req.params.id, 10);
+            db.candidate.destroy({
+                where: {
+                    id: candidateId
+                }
+            }).then(function (rowsDeleted) {
+                if (rowsDeleted === 0) {                
+                    error.notFound(res,"No candidate with this id");
+                } else {
+                    res.status(204).send();
+                }
+            }, function () {
+                error.serverError(res);
+            })
+        }, function(){
+            error.unauthorized(res);
         })
     })
     /**
@@ -102,28 +118,32 @@ idRoute
     * @return {obj} res obj with bad request error
     */
     .put(function (req, res) {
-        middleware.requireAuthentication(req,res);
-        var candidateId = parseInt(req.params.id, 10);
-        var body = _.pick(req.body, 'name', 'managers');
-        var attributes = {};
-        if (body.hasOwnProperty('name')) {            
-            attributes.name = body.name;
-        }
-        if (body.hasOwnProperty('managers')) {
-            attributes.managers = body.managers;
-        }
-        db.candidate.findById(candidateId).then(function (candidate) {
-            if (candidate) {
-                return candidate.update(attributes).then(function (candidate) {
-                    res.json(candidate.toJSON());
-                }, function (errMsg) {
-                    error.badRequest(res,errMsg);
-                })
-            } else {
-                error.notFound(res,"No candidate with this id");
+        var token = req.get('Auth');                    
+        db.user.findByToken(token).then(function (user) {
+            var candidateId = parseInt(req.params.id, 10);
+            var body = _.pick(req.body, 'name', 'managers');
+            var attributes = {};
+            if (body.hasOwnProperty('name')) {            
+                attributes.name = body.name;
             }
-        }, function () {
-            error.serverError(res);
+            if (body.hasOwnProperty('managers')) {
+                attributes.managers = body.managers;
+            }
+            db.candidate.findById(candidateId).then(function (candidate) {
+                if (candidate) {
+                    return candidate.update(attributes).then(function (candidate) {
+                        res.json(candidate.toJSON());
+                    }, function (errMsg) {
+                        error.badRequest(res,errMsg);
+                    })
+                } else {
+                    error.notFound(res,"No candidate with this id");
+                }
+            }, function () {
+                error.serverError(res);
+            })
+        }, function(){
+            error.unauthorized(res);
         })
     });
 module.exports = router;
