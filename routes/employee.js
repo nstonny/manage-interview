@@ -3,7 +3,6 @@ var router = express.Router();
 var db = require('../db.js');
 var _ = require('underscore');
 var error = require('../error-handlers');
-var middleware = require('../middleware.js')(db);
 var allRoute = router.route('/');
 var idRoute = router.route('/:id');
 
